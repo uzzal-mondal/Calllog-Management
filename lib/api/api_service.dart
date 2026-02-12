@@ -34,37 +34,35 @@ class ApiService {
     }
   }
 
+  // Generic method to get Department or Designation
+  static Future<List<DesignationList>> getDropdownList(
+    String requestFor,
+    int userId,
+  ) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString("token");
 
-// Generic method to get Department or Designation
-static Future<List<DesignationList>> getDropdownList(
-    String requestFor, int userId) async {
-  try {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString("token");
+      final url = Uri.parse("http://103.166.187.66/api/dynamic/public/100");
 
-    final url = Uri.parse("http://103.166.187.66/api/dynamic/public/100");
+      final response = await http.post(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token",
+        },
+        body: jsonEncode({"RequestFor": requestFor, "UserId": userId}),
+      );
 
-    final response = await http.post(
-      url,
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer $token",
-      },
-      body: jsonEncode({"RequestFor": requestFor, "UserId": userId}),
-    );
-
-    if (response.statusCode == 200) {
-      return designationListFromJson(response.body);
+      if (response.statusCode == 200) {
+        return designationListFromJson(response.body);
+      }
+      return [];
+    } catch (e) {
+      print("Get $requestFor Error: $e");
+      return [];
     }
-    return [];
-  } catch (e) {
-    print("Get $requestFor Error: $e");
-    return [];
   }
-}
-
-
-
 
   // ✅ Update User Profile API
   static Future<bool> updateUserProfile(User user) async {
@@ -72,7 +70,7 @@ static Future<List<DesignationList>> getDropdownList(
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString("token"); // get token
 
-      final url = Uri.parse("$baseUrl/updateUser");
+      final url = Uri.parse("http://103.166.187.66/api/dynamic/authorized/101");
 
       final response = await http.post(
         url,
