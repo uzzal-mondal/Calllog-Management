@@ -16,6 +16,15 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+ 
+    @override
+    void initState() {
+      super.initState();
+
+      usernameController.text = "subodhkumarbhowmick";
+      passwordController.text = "password";
+    }
+
   void _login() async {
     if (usernameController.text.isEmpty || passwordController.text.isEmpty) {
       ScaffoldMessenger.of(
