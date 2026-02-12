@@ -1,3 +1,5 @@
+import 'package:call_log_management/aboutus.dart';
+import 'package:call_log_management/faq.dart';
 import 'package:call_log_management/profile.dart';
 import 'package:flutter/material.dart';
 
@@ -121,12 +123,26 @@ class _MoreScreenState extends State<MoreScreen> {
                       buildMenuItem(
                         icon: Icons.help_outline,
                         title: "FAQ",
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const FaqScreen(),
+                            ),
+                          );
+                        },
                       ),
                       buildMenuItem(
                         icon: Icons.info_outline,
                         title: "About Us",
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const AboutUsScreen(),
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),

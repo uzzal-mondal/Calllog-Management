@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:call_log_management/api/api_constants.dart';
+import 'package:call_log_management/model/aboutus';
 import 'package:call_log_management/model/desiginationlist.dart';
+import 'package:call_log_management/model/faqmodel.dart';
 import 'package:call_log_management/model/loginresponse.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -109,6 +111,41 @@ class ApiService {
     } catch (e) {
       print("Error updating profile: $e");
       return false;
+    }
+  }
+
+  static Future<List<FaqModel>> getFaq() async {
+    final response = await http.post(
+      Uri.parse("http://103.166.187.66/api/dynamic/public/103"),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({"UserId": 1}),
+    );
+
+    if (response.statusCode == 200) {
+      final List data = jsonDecode(response.body);
+      return data.map((e) => FaqModel.fromJson(e)).toList();
+    } else {
+      throw Exception("Failed to load FAQ");
+    }
+  }
+
+
+  static Future<AboutUsModel> getAboutUs() async {
+
+    final response = await http.post(
+      Uri.parse("http://103.166.187.66/api/dynamic/public/104"),   // YOUR FULL BASE URL here
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: jsonEncode({
+        "PageKey": "AboutUs"
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      return AboutUsModel.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception("About Us load failed");
     }
   }
 }
