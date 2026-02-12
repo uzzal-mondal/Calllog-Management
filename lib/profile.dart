@@ -91,6 +91,18 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.blue, // set your app bar color
+        iconTheme: const IconThemeData(
+          color: Colors.white, // back button color
+        ),
+        title: const Text(
+          "My Profile",
+          style: TextStyle(fontSize: 20, color: Colors.white),
+        ),
+        centerTitle: true, // optional
+      ),
+
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Form(
@@ -138,10 +150,32 @@ class _ProfilePageState extends State<ProfilePage> {
                 designationItems,
                 (value) => setState(() => selectedDesignation = value),
               ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: saveProfile,
-                child: const Text("Save Profile"),
+
+              SizedBox(
+                width: double.infinity, // makes button full width
+                child: ElevatedButton(
+                  onPressed: saveProfile,
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 12,
+                    ), // taller button
+                    backgroundColor: Colors.blue, // button color
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                        12,
+                      ), // rounded corners
+                    ),
+                    elevation: 4, // shadow effect
+                  ),
+                  child: const Text(
+                    "Save Profile",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white, // text color
+                    ),
+                  ),
+                ),
               ),
             ],
           ),

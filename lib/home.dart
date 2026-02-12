@@ -1,4 +1,5 @@
 import 'package:call_log_management/api/api_constants.dart';
+import 'package:call_log_management/more.dart';
 import 'package:call_log_management/profile.dart';
 import 'package:flutter/material.dart';
 
@@ -19,8 +20,8 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _pages = const [
     Center(child: Text("Home Page")),
     Center(child: Text("Create Issue Page")),
-    // Profile Page
-    ProfilePage(), // Pass the user data to ProfilePage
+    MoreScreen(),
+    //MorePage(), // Pass the user data to ProfilePage
   ];
 
   void _onItemTapped(int index) {
