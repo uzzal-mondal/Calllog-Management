@@ -19,7 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Center(child: Text("Home Page")),
     Center(child: Text("Create Issue Page")),
     // Profile Page
-    ProfilePage(),
+    ProfilePage(), // Pass the user data to ProfilePage
   ];
 
   void _onItemTapped(int index) {
