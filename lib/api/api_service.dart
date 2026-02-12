@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:call_log_management/api/api_constants.dart';
 import 'package:call_log_management/model/desiginationlist.dart';
 import 'package:call_log_management/model/loginresponse.dart';
 import 'package:http/http.dart' as http;
@@ -64,33 +65,46 @@ class ApiService {
     }
   }
 
-  // ✅ Update User Profile API
+
+  /// Update user profile
   static Future<bool> updateUserProfile(User user) async {
+    final url = Uri.parse("http://103.166.187.66/api/dynamic/authorized/101");
+
+    // Prepare JSON body
+    final Map<String, dynamic> body = {
+      "UserId": user.userId,
+      "DisplayName": user.displayName,
+      "Email": user.email,
+      "Mobile": user.mobile,
+      "EmergencyContactPerson": user.emergencyContactMobile, // Corrected key
+      "PresentAddress": user.presentAddress,
+      "PermanentAddress": user.permanentAddress,
+      "DepartmentId": user.departmentId,
+      "DesignationId": user.designationId,
+      "IsActive": true,
+    };
+
     try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? token = prefs.getString("token"); // get token
-
-      final url = Uri.parse("http://103.166.187.66/api/dynamic/authorized/101");
-
       final response = await http.post(
         url,
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer $token", // send token
+          "Authorization": "Bearer ${ApiConstants.token}",
         },
-        body: jsonEncode(user.toJson()), // send User data
+        body: jsonEncode(body),
       );
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         if (data["Status"] == 1) {
+          // Update local user data
+          ApiConstants.loginResponse.user = User.fromJson(body);
           return true;
         }
       }
-
       return false;
     } catch (e) {
-      print("Update Error: $e");
+      print("Error updating profile: $e");
       return false;
     }
   }

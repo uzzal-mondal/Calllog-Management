@@ -1,8 +1,8 @@
-import 'package:call_log_management/api/api_constants.dart';
+import 'package:flutter/material.dart';
 import 'package:call_log_management/api/api_service.dart';
+import 'package:call_log_management/api/api_constants.dart';
 import 'package:call_log_management/model/desiginationlist.dart';
 import 'package:call_log_management/model/loginresponse.dart';
-import 'package:flutter/material.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -14,7 +14,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   final _formKey = GlobalKey<FormState>();
 
-  // Text Controllers
+  // Controllers
   late TextEditingController displayNameController;
   late TextEditingController emailController;
   late TextEditingController mobileController;
@@ -22,7 +22,7 @@ class _ProfilePageState extends State<ProfilePage> {
   late TextEditingController presentAddressController;
   late TextEditingController permanentAddressController;
 
-  // Selected dropdown values
+  // Dropdown values
   DesignationList? selectedDepartment;
   DesignationList? selectedDesignation;
 
@@ -35,7 +35,7 @@ class _ProfilePageState extends State<ProfilePage> {
     super.initState();
     final user = ApiConstants.loginResponse.user!;
 
-    // Initialize controllers
+    // Initialize controllers with user data
     displayNameController = TextEditingController(text: user.displayName ?? "");
     emailController = TextEditingController(text: user.email ?? "");
     mobileController = TextEditingController(text: user.mobile ?? "");
@@ -49,24 +49,31 @@ class _ProfilePageState extends State<ProfilePage> {
       text: user.permanentAddress ?? "",
     );
 
-    // Fetch dropdown data
-    fetchDepartments();
-    fetchDesignations();
+    fetchDropdowns();
   }
 
-  Future<void> fetchDepartments() async {
+  Future<void> fetchDropdowns() async {
     final userId = ApiConstants.loginResponse.user!.userId!;
-    final list = await ApiService.getDropdownList("Department", userId);
-    setState(() {
-      departmentItems = list;
-    });
-  }
+    final deptList = await ApiService.getDropdownList("Department", userId);
+    final desigList = await ApiService.getDropdownList("Designation", userId);
 
-  Future<void> fetchDesignations() async {
-    final userId = ApiConstants.loginResponse.user!.userId!;
-    final list = await ApiService.getDropdownList("Designation", userId);
     setState(() {
-      designationItems = list;
+      departmentItems = deptList;
+      designationItems = desigList;
+
+      selectedDepartment = departmentItems.isNotEmpty
+          ? departmentItems.firstWhere(
+              (d) => d.id == ApiConstants.loginResponse.user!.departmentId,
+              orElse: () => departmentItems[0],
+            )
+          : null;
+
+      selectedDesignation = designationItems.isNotEmpty
+          ? designationItems.firstWhere(
+              (d) => d.id == ApiConstants.loginResponse.user!.designationId,
+              orElse: () => designationItems[0],
+            )
+          : null;
     });
   }
 
@@ -107,10 +114,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 mobileController,
                 keyboardType: TextInputType.phone,
               ),
-              buildTextField(
-                "Emergency Contact Person",
-                emergencyContactController,
-              ),
+              buildTextField("Emergency Contact", emergencyContactController),
               buildTextField(
                 "Present Address",
                 presentAddressController,
@@ -122,14 +126,12 @@ class _ProfilePageState extends State<ProfilePage> {
                 maxLines: 2,
               ),
               const SizedBox(height: 15),
-              // Department Dropdown
               buildDropdown(
                 "Department",
                 selectedDepartment,
                 departmentItems,
                 (value) => setState(() => selectedDepartment = value),
               ),
-              // Designation Dropdown
               buildDropdown(
                 "Designation",
                 selectedDesignation,
@@ -138,35 +140,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    // Prepare updated User object
-                    User updatedUser = User(
-                      displayName: displayNameController.text,
-                      email: emailController.text,
-                      mobile: mobileController.text,
-                      emergencyContactMobile: emergencyContactController.text,
-                      presentAddress: presentAddressController.text,
-                      permanentAddress: permanentAddressController.text,
-                      // You can also add department and designation ids if your API supports them
-                      // e.g. departmentId: selectedDepartment?.id, designationId: selectedDesignation?.id
-                    );
-
-                    bool success = await ApiService.updateUserProfile(
-                      updatedUser,
-                    );
-
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          success
-                              ? "Profile updated successfully"
-                              : "Failed to update profile",
-                        ),
-                      ),
-                    );
-                  }
-                },
+                onPressed: saveProfile,
                 child: const Text("Save Profile"),
               ),
             ],
@@ -176,7 +150,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  // Text Field Builder
+  // Text field builder
   Widget buildTextField(
     String label,
     TextEditingController controller, {
@@ -199,7 +173,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  // Generic Dropdown Builder for DesignationList objects
+  // Dropdown builder
   Widget buildDropdown(
     String label,
     DesignationList? value,
@@ -226,5 +200,35 @@ class _ProfilePageState extends State<ProfilePage> {
         validator: (value) => value == null ? "Please select $label" : null,
       ),
     );
+  }
+
+  Future<void> saveProfile() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    final user = ApiConstants.loginResponse.user!;
+
+    User updatedUser = User(
+      userId: user.userId,
+      displayName: displayNameController.text,
+      email: emailController.text,
+      mobile: mobileController.text,
+      emergencyContactMobile: emergencyContactController.text,
+      presentAddress: presentAddressController.text,
+      permanentAddress: permanentAddressController.text,
+      departmentId: selectedDepartment?.id,
+      designationId: selectedDesignation?.id,
+    );
+
+    bool success = await ApiService.updateUserProfile(updatedUser);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          success ? "Profile updated successfully" : "Failed to update profile",
+        ),
+      ),
+    );
+
+    if (success) setState(() {});
   }
 }
