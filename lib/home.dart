@@ -12,8 +12,9 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
-  final String userName = ApiConstants.loginResponse.user!.displayName ?? "Unknown User";
- // Placeholder username
+  final String userName =
+      ApiConstants.loginResponse.user!.displayName ?? "Unknown User";
+  // Placeholder username
 
   final List<Widget> _pages = const [
     Center(child: Text("Home Page")),
@@ -122,7 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Icon(Icons.add_circle),
             label: "Create",
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
+          BottomNavigationBarItem(icon: Icon(Icons.more), label: "more"),
         ],
       ),
     );

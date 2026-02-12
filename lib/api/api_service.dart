@@ -65,7 +65,6 @@ class ApiService {
     }
   }
 
-
   /// Update user profile
   static Future<bool> updateUserProfile(User user) async {
     final url = Uri.parse("http://103.166.187.66/api/dynamic/authorized/101");
@@ -76,7 +75,9 @@ class ApiService {
       "DisplayName": user.displayName,
       "Email": user.email,
       "Mobile": user.mobile,
-      "EmergencyContactPerson": user.emergencyContactMobile, // Corrected key
+      "UserImage": "",
+      "EmergencyContactPersion": user.emergencyContactPersion, // Corrected key
+      "EmergencyContactMobile": user.emergencyContactMobile, // Corrected key
       "PresentAddress": user.presentAddress,
       "PermanentAddress": user.permanentAddress,
       "DepartmentId": user.departmentId,
@@ -94,11 +95,13 @@ class ApiService {
         body: jsonEncode(body),
       );
 
+      print(response.body); // Debugging line
+
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         if (data["Status"] == 1) {
           // Update local user data
-          ApiConstants.loginResponse.user = User.fromJson(body);
+          ApiConstants.loginResponse.user = user;
           return true;
         }
       }
