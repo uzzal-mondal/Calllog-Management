@@ -1,3 +1,5 @@
+import 'package:call_log_management/api/api_constants.dart';
+import 'package:call_log_management/profile.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -10,12 +12,14 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
-  final String userName = " John Doe"; // Placeholder username
+  final String userName = ApiConstants.loginResponse.user!.displayName ?? "Unknown User";
+ // Placeholder username
 
   final List<Widget> _pages = const [
     Center(child: Text("Home Page")),
     Center(child: Text("Create Issue Page")),
-    Center(child: Text("Profile Page")),
+    // Profile Page
+    ProfilePage(),
   ];
 
   void _onItemTapped(int index) {

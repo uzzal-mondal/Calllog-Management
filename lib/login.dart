@@ -1,3 +1,4 @@
+import 'package:call_log_management/api/api_constants.dart';
 import 'package:call_log_management/api/api_service.dart';
 import 'package:call_log_management/model/loginresponse.dart';
 import 'package:flutter/material.dart';
@@ -16,14 +17,13 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
- 
-    @override
-    void initState() {
-      super.initState();
+  @override
+  void initState() {
+    super.initState();
 
-      usernameController.text = "subodhkumarbhowmick";
-      passwordController.text = "password";
-    }
+    usernameController.text = "subodhkumarbhowmick";
+    passwordController.text = "password";
+  }
 
   void _login() async {
     if (usernameController.text.isEmpty || passwordController.text.isEmpty) {
@@ -43,6 +43,10 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => isLoading = false);
 
     if (response != null && response.success == true) {
+      
+      ApiConstants.loginResponse = response;
+       print(ApiConstants.loginResponse.user!.displayName);
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const HomeScreen()),
