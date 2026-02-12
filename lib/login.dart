@@ -1,5 +1,7 @@
-import 'package:call_log_management/home.dart';
+import 'package:call_log_management/api/api_service.dart';
+import 'package:call_log_management/model/loginresponse.dart';
 import 'package:flutter/material.dart';
+import 'package:call_log_management/home.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -11,20 +13,43 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   bool isLoading = false;
 
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
   void _login() async {
+    if (usernameController.text.isEmpty || passwordController.text.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Please enter credentials")));
+      return;
+    }
+
     setState(() => isLoading = true);
 
-    await Future.delayed(const Duration(seconds: 2));
+    LoginResponse? response = await ApiService.login(
+      usernameController.text.trim(),
+      passwordController.text.trim(),
+    );
 
     setState(() => isLoading = false);
 
-    Navigator.pushReplacement(
-    context,
-    MaterialPageRoute(
-      builder: (context) => const HomeScreen(),
-    ),
-  );
-  
+    if (response != null && response.success == true) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Invalid username or password")),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    usernameController.dispose();
+    passwordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -51,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 const Text(
-                  "Welcome Back",
+                  "Login",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 24,
@@ -60,17 +85,23 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 30),
 
-                /// Email Field
-                _buildTextField("Email", Icons.email),
+                _buildTextField(
+                  "Username",
+                  Icons.person,
+                  controller: usernameController,
+                ),
 
                 const SizedBox(height: 16),
 
-                /// Password Field
-                _buildTextField("Password", Icons.lock, isPassword: true),
+                _buildTextField(
+                  "Password",
+                  Icons.lock,
+                  controller: passwordController,
+                  isPassword: true,
+                ),
 
                 const SizedBox(height: 30),
 
-                /// Login Button
                 SizedBox(
                   width: double.infinity,
                   height: 50,
@@ -107,9 +138,11 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildTextField(
     String hint,
     IconData icon, {
+    required TextEditingController controller,
     bool isPassword = false,
   }) {
     return TextField(
+      controller: controller,
       obscureText: isPassword,
       style: const TextStyle(color: Colors.white),
       decoration: InputDecoration(
