@@ -4,6 +4,7 @@ import 'package:call_log_management/notify.dart';
 import 'package:call_log_management/profile.dart';
 import 'package:call_log_management/staticpages.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class MoreScreen extends StatefulWidget {
   const MoreScreen({Key? key}) : super(key: key);
@@ -14,14 +15,14 @@ class MoreScreen extends StatefulWidget {
 
 class _MoreScreenState extends State<MoreScreen> {
   Widget buildMenuItem({
-    required IconData icon,
+    required Widget icon,
     required String title,
     required VoidCallback onTap,
   }) {
     return Column(
       children: [
         ListTile(
-          leading: Icon(icon, color: Colors.blue),
+          leading: icon, // direct widget
           title: Text(
             title,
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
@@ -93,7 +94,7 @@ class _MoreScreenState extends State<MoreScreen> {
                   child: Column(
                     children: [
                       buildMenuItem(
-                        icon: Icons.person,
+                        icon: const Icon(Icons.person, color: Colors.blue),
                         title: "My Profile",
                         onTap: () {
                           Navigator.push(
@@ -105,7 +106,7 @@ class _MoreScreenState extends State<MoreScreen> {
                         },
                       ),
                       buildMenuItem(
-                        icon: Icons.lock,
+                        icon: const Icon(Icons.lock, color: Colors.blue),
                         title: "Change Password",
                         onTap: () {},
                       ),
@@ -118,12 +119,16 @@ class _MoreScreenState extends State<MoreScreen> {
                   child: Column(
                     children: [
                       buildMenuItem(
-                        icon: Icons.star_rate,
+                        icon: const FaIcon(FontAwesomeIcons.star, size: 20),
                         title: "Rate Us",
                         onTap: () {},
                       ),
                       buildMenuItem(
-                        icon: Icons.help_outline,
+                        icon: const Icon(
+                          Icons.help_outline,
+                          color: Colors.blue,
+                        ),
+
                         title: "FAQ",
                         onTap: () {
                           Navigator.push(
@@ -136,7 +141,11 @@ class _MoreScreenState extends State<MoreScreen> {
                       ),
 
                       buildMenuItem(
-                        icon: Icons.book_outlined,
+                        icon: const FaIcon(
+                          FontAwesomeIcons.book,
+                          size: 20,
+                          color: Colors.blue,
+                        ),
                         title: "Knowledge Base",
                         onTap: () {
                           Navigator.push(
@@ -149,7 +158,10 @@ class _MoreScreenState extends State<MoreScreen> {
                       ),
 
                       buildMenuItem(
-                        icon: Icons.book_outlined,
+                        icon: const Icon(
+                          Icons.notifications,
+                          color: Colors.blue,
+                        ),
                         title: "Notification",
                         onTap: () {
                           Navigator.push(
@@ -162,7 +174,10 @@ class _MoreScreenState extends State<MoreScreen> {
                       ),
 
                       buildMenuItem(
-                        icon: Icons.info_outline,
+                        icon: const Icon(
+                          Icons.info_outline,
+                          color: Colors.blue,
+                        ),
                         title: "About Us",
                         onTap: () {
                           Navigator.push(
@@ -178,7 +193,10 @@ class _MoreScreenState extends State<MoreScreen> {
                       ),
 
                       buildMenuItem(
-                        icon: Icons.info_outline,
+                        icon: const Icon(
+                          Icons.info_outline,
+                          color: Colors.blue,
+                        ),
                         title: "Privacy Policy",
                         onTap: () {
                           Navigator.push(

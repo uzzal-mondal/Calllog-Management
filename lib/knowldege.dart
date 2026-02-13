@@ -1,7 +1,8 @@
-import 'package:call_log_management/model/postmodel.dart';
+import 'package:call_log_management/knowledgedetailsscreen.dart';
 import 'package:flutter/material.dart';
-import '../api/api_service.dart';
 import 'package:flutter_html/flutter_html.dart';
+import '../api/api_service.dart';
+import '../model/postmodel.dart';
 
 class KnowledgeBaseScreen extends StatefulWidget {
   const KnowledgeBaseScreen({super.key});
@@ -41,7 +42,7 @@ class _KnowledgeBaseScreenState extends State<KnowledgeBaseScreen> {
         page = 1;
         posts.clear();
         totalPages = 1;
-        loadPosts(); // Fetch posts with new search term
+        loadPosts();
       }
     });
   }
@@ -65,7 +66,7 @@ class _KnowledgeBaseScreenState extends State<KnowledgeBaseScreen> {
         totalPages = response.pages.totalPages;
       });
     } catch (e) {
-      print("ERROR: $e");
+      debugPrint("ERROR: $e");
     } finally {
       setState(() => isLoading = false);
     }
@@ -83,18 +84,13 @@ class _KnowledgeBaseScreenState extends State<KnowledgeBaseScreen> {
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
-        title: const Text(
-          "Knowledge Base",
-          style: TextStyle(color: Colors.white),
-        ),
-        iconTheme: const IconThemeData(color: Colors.white),
+        title: const Text("Knowledge Base"),
         backgroundColor: Colors.blue,
       ),
       body: Column(
         children: [
-          // Search bar
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16),
             child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
@@ -102,14 +98,13 @@ class _KnowledgeBaseScreenState extends State<KnowledgeBaseScreen> {
                 prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
-                  borderSide: const BorderSide(color: Colors.blue),
                 ),
                 filled: true,
                 fillColor: Colors.white,
               ),
             ),
           ),
-          // Posts list
+
           Expanded(
             child: posts.isEmpty && isLoading
                 ? const Center(child: CircularProgressIndicator())
@@ -133,19 +128,8 @@ class _KnowledgeBaseScreenState extends State<KnowledgeBaseScreen> {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(14),
                           border: Border.all(color: Colors.blue),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(.05),
-                              blurRadius: 6,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
                         ),
                         child: ListTile(
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 12,
-                          ),
                           title: Text(
                             post.title,
                             style: const TextStyle(
@@ -153,15 +137,19 @@ class _KnowledgeBaseScreenState extends State<KnowledgeBaseScreen> {
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                          subtitle: Padding(
-                            padding: const EdgeInsets.only(top: 6),
-                            child: Html(data: post.content),
-                          ),
                           trailing: const Icon(
                             Icons.arrow_forward_ios,
                             size: 16,
-                            color: Colors.blue,
                           ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    KnowledgeDetailsScreen(post: post),
+                              ),
+                            );
+                          },
                         ),
                       );
                     },
