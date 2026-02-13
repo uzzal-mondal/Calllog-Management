@@ -243,7 +243,7 @@ class ApiService {
     final response = await http.post(
       url,
       headers: {"Content-Type": "application/json"},
-      body: jsonEncode({"PageKey": "AboutUs"}),
+      body: jsonEncode({"PageKey": "image"}),
     );
 
     if (response.statusCode == 200) {
