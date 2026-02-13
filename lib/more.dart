@@ -1,4 +1,3 @@
-import 'package:call_log_management/aboutus.dart';
 import 'package:call_log_management/faq.dart';
 import 'package:call_log_management/knowldege.dart';
 import 'package:call_log_management/notify.dart';

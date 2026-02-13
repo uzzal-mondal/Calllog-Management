@@ -10,6 +10,7 @@ dependencies:
   http: ^1.6.0
   shared_preferences: ^2.2.2
   flutter_html: ^3.0.0
+  font_awesome_flutter: ^10.8.0
   flutter:
     sdk: flutter
 
