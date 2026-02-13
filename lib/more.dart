@@ -1,7 +1,9 @@
 import 'package:call_log_management/aboutus.dart';
 import 'package:call_log_management/faq.dart';
 import 'package:call_log_management/knowldege.dart';
+import 'package:call_log_management/notify.dart';
 import 'package:call_log_management/profile.dart';
+import 'package:call_log_management/staticpages.dart';
 import 'package:flutter/material.dart';
 
 class MoreScreen extends StatefulWidget {
@@ -148,13 +150,45 @@ class _MoreScreenState extends State<MoreScreen> {
                       ),
 
                       buildMenuItem(
+                        icon: Icons.book_outlined,
+                        title: "Notification",
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => NotificationScreen(),
+                            ),
+                          );
+                        },
+                      ),
+
+                      buildMenuItem(
                         icon: Icons.info_outline,
                         title: "About Us",
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const AboutUsScreen(),
+                              builder: (_) => StaticContentPage(
+                                title: "About Us",
+                                keyName: "AboutUs",
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+
+                      buildMenuItem(
+                        icon: Icons.info_outline,
+                        title: "Privacy Policy",
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => StaticContentPage(
+                                title: "Privacy Policy",
+                                keyName: "PrivacyPolicy",
+                              ),
                             ),
                           );
                         },

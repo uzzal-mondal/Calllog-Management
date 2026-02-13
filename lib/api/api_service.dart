@@ -4,6 +4,7 @@ import 'package:call_log_management/model/aboutus';
 import 'package:call_log_management/model/desiginationlist.dart';
 import 'package:call_log_management/model/faqmodel.dart';
 import 'package:call_log_management/model/loginresponse.dart';
+import 'package:call_log_management/model/notifymodel.dart';
 import 'package:call_log_management/model/postmodel.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -146,15 +147,12 @@ class ApiService {
     }
   }
 
-
-
   /// Fetch posts with pagination
   static Future<PostResponse> fetchPosts({
     required int userId,
     required int pageNumber,
     int pageSize = 10,
   }) async {
-
     final body = {
       "UserId": userId,
       "PageSize": pageSize,
@@ -162,7 +160,7 @@ class ApiService {
     };
 
     final response = await http.post(
-       Uri.parse("http://103.166.187.66/api/dynamic/public/106"),
+      Uri.parse("http://103.166.187.66/api/dynamic/public/106"),
       headers: {"Content-Type": "application/json"},
       body: jsonEncode(body),
     );
@@ -177,5 +175,38 @@ class ApiService {
     }
   }
 
+  Future<List<NotificationModel>> fetchNotifications() async {
+    final url = Uri.parse('http://103.166.187.66/api/dynamic/public/105');
+    final response = await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({"UserId": 1}),
+    );
+
+    if (response.statusCode == 200) {
+      List jsonData = json.decode(response.body);
+      return jsonData.map((e) => NotificationModel.fromJson(e)).toList();
+    } else {
+      throw Exception('Failed to load notifications');
+    }
+  }
+
+
+/// GET Static Content by PageKey
+  static Future<Map<String, dynamic>> getStaticContent(String pageKey) async {
+    final url = Uri.parse('http://103.166.187.66/api/dynamic/public/104');
+
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({"PageKey": pageKey}),
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to load static content');
+    }
+  }
 
 }
