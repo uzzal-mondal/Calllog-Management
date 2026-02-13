@@ -5,6 +5,7 @@ import 'package:call_log_management/model/desiginationlist.dart';
 import 'package:call_log_management/model/faqmodel.dart';
 import 'package:call_log_management/model/loginresponse.dart';
 import 'package:call_log_management/model/notifymodel.dart';
+import 'package:call_log_management/model/portfolio.dart';
 import 'package:call_log_management/model/postmodel.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -233,6 +234,23 @@ class ApiService {
       return PostResponse.fromJson(data);
     } else {
       throw Exception("Failed to search posts: ${response.statusCode}");
+    }
+  }
+
+  static Future<List<PortfolioModel>> fetchPortfolio() async {
+    final url = Uri.parse('http://103.166.187.66/api/dynamic/public/109');
+
+    final response = await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({"PageKey": "AboutUs"}),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return portfolioModelFromJson(jsonEncode(data));
+    } else {
+      throw Exception("Failed to load portfolio");
     }
   }
 }

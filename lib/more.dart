@@ -1,6 +1,7 @@
 import 'package:call_log_management/faq.dart';
 import 'package:call_log_management/knowldege.dart';
 import 'package:call_log_management/notify.dart';
+import 'package:call_log_management/portfolio.dart';
 import 'package:call_log_management/profile.dart';
 import 'package:call_log_management/staticpages.dart';
 import 'package:flutter/material.dart';
@@ -152,6 +153,23 @@ class _MoreScreenState extends State<MoreScreen> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => const KnowledgeBaseScreen(),
+                            ),
+                          );
+                        },
+                      ),
+
+                      buildMenuItem(
+                        icon: const FaIcon(
+                          FontAwesomeIcons.briefcase,
+                          size: 20,
+                          color: Colors.blue,
+                        ),
+                        title: "Portfolio",
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const PortfolioScreen(),
                             ),
                           );
                         },
