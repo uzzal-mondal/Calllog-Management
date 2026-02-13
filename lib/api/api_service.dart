@@ -4,6 +4,7 @@ import 'package:call_log_management/model/aboutus';
 import 'package:call_log_management/model/desiginationlist.dart';
 import 'package:call_log_management/model/faqmodel.dart';
 import 'package:call_log_management/model/loginresponse.dart';
+import 'package:call_log_management/model/postmodel.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -129,17 +130,13 @@ class ApiService {
     }
   }
 
-
   static Future<AboutUsModel> getAboutUs() async {
-
     final response = await http.post(
-      Uri.parse("http://103.166.187.66/api/dynamic/public/104"),   // YOUR FULL BASE URL here
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: jsonEncode({
-        "PageKey": "AboutUs"
-      }),
+      Uri.parse(
+        "http://103.166.187.66/api/dynamic/public/104",
+      ), // YOUR FULL BASE URL here
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({"PageKey": "AboutUs"}),
     );
 
     if (response.statusCode == 200) {
@@ -148,4 +145,37 @@ class ApiService {
       throw Exception("About Us load failed");
     }
   }
+
+
+
+  /// Fetch posts with pagination
+  static Future<PostResponse> fetchPosts({
+    required int userId,
+    required int pageNumber,
+    int pageSize = 10,
+  }) async {
+
+    final body = {
+      "UserId": userId,
+      "PageSize": pageSize,
+      "PageNumber": pageNumber,
+    };
+
+    final response = await http.post(
+       Uri.parse("http://103.166.187.66/api/dynamic/public/106"),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode(body),
+    );
+
+    print("STATUS: ${response.statusCode}");
+    print("BODY: ${response.body}");
+
+    if (response.statusCode == 200) {
+      return PostResponse.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception("Failed to load posts");
+    }
+  }
+
+
 }

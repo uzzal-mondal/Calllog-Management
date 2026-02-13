@@ -1,5 +1,6 @@
 import 'package:call_log_management/aboutus.dart';
 import 'package:call_log_management/faq.dart';
+import 'package:call_log_management/knowldege.dart';
 import 'package:call_log_management/profile.dart';
 import 'package:flutter/material.dart';
 
@@ -132,6 +133,20 @@ class _MoreScreenState extends State<MoreScreen> {
                           );
                         },
                       ),
+
+                      buildMenuItem(
+                        icon: Icons.book_outlined,
+                        title: "Knowledge Base",
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const KnowledgeBaseScreen(),
+                            ),
+                          );
+                        },
+                      ),
+
                       buildMenuItem(
                         icon: Icons.info_outline,
                         title: "About Us",
