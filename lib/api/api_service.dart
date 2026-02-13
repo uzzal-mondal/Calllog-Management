@@ -191,8 +191,7 @@ class ApiService {
     }
   }
 
-
-/// GET Static Content by PageKey
+  /// GET Static Content by PageKey
   static Future<Map<String, dynamic>> getStaticContent(String pageKey) async {
     final url = Uri.parse('http://103.166.187.66/api/dynamic/public/104');
 
@@ -209,4 +208,31 @@ class ApiService {
     }
   }
 
+  /// Search posts API
+  static Future<PostResponse> searchPosts({
+    required int userId,
+    required String searchTerm,
+    required int pageNumber,
+    required int pageSize,
+  }) async {
+    final url = Uri.parse('http://103.166.187.66/api/dynamic/public/107');
+
+    final body = jsonEncode({
+      "UserId": userId,
+      "SearchTerm": searchTerm,
+      "PageSize": pageSize,
+      "PageNumber": pageNumber,
+    });
+
+    final headers = {"Content-Type": "application/json"};
+
+    final response = await http.post(url, headers: headers, body: body);
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return PostResponse.fromJson(data);
+    } else {
+      throw Exception("Failed to search posts: ${response.statusCode}");
+    }
+  }
 }
