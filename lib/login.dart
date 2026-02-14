@@ -2,7 +2,7 @@ import 'package:call_log_management/api/api_constants.dart';
 import 'package:call_log_management/api/api_service.dart';
 import 'package:call_log_management/model/loginresponse.dart';
 import 'package:flutter/material.dart';
-import 'package:call_log_management/dashboard.dart';
+import 'package:call_log_management/dashboard/dashboard.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

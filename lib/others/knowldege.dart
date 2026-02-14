@@ -1,8 +1,8 @@
-import 'package:call_log_management/knowledgedetailsscreen.dart';
+import 'package:call_log_management/others/knowledgedetailsscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import '../api/api_service.dart';
-import '../model/postmodel.dart';
+import '../../api/api_service.dart';
+import '../../model/postmodel.dart';
 
 class KnowledgeBaseScreen extends StatefulWidget {
   const KnowledgeBaseScreen({super.key});

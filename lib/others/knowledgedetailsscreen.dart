@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import '../model/postmodel.dart';
+import '../../model/postmodel.dart';
 
 class KnowledgeDetailsScreen extends StatelessWidget {
   final PostItem post;

@@ -1,8 +1,8 @@
-import 'package:call_log_management/faq.dart';
-import 'package:call_log_management/knowldege.dart';
-import 'package:call_log_management/notify.dart';
-import 'package:call_log_management/portfolio.dart';
-import 'package:call_log_management/profile.dart';
+import 'package:call_log_management/others/faq.dart';
+import 'package:call_log_management/others/knowldege.dart';
+import 'package:call_log_management/others/notify.dart';
+import 'package:call_log_management/others/portfolio.dart';
+import 'package:call_log_management/others/profile.dart';
 import 'package:call_log_management/staticpages.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';

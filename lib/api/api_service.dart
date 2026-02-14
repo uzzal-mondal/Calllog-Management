@@ -3,6 +3,7 @@ import 'package:call_log_management/api/api_constants.dart';
 import 'package:call_log_management/model/aboutus.dart';
 import 'package:call_log_management/model/desiginationlist.dart';
 import 'package:call_log_management/model/faqmodel.dart';
+import 'package:call_log_management/model/issuedetails.dart';
 import 'package:call_log_management/model/loginresponse.dart';
 import 'package:call_log_management/model/notifymodel.dart';
 import 'package:call_log_management/model/portfolio.dart';
@@ -43,16 +44,20 @@ class ApiService {
     }
   }
 
-  // Generic method to get Department or Designation
   static Future<List<DesignationList>> getDropdownList(
     String requestFor,
-    int userId,
-  ) async {
+    int userId, {
+    int? refId,
+  }) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString("token");
 
       final url = Uri.parse("http://103.166.187.66/api/dynamic/public/100");
+
+      Map<String, dynamic> body = {"RequestFor": requestFor, "UserId": userId};
+
+      if (refId != null) body["RefId"] = refId;
 
       final response = await http.post(
         url,
@@ -60,15 +65,16 @@ class ApiService {
           "Content-Type": "application/json",
           "Authorization": "Bearer $token",
         },
-        body: jsonEncode({"RequestFor": requestFor, "UserId": userId}),
+        body: jsonEncode(body),
       );
 
       if (response.statusCode == 200) {
         return designationListFromJson(response.body);
       }
+
       return [];
     } catch (e) {
-      print("Get $requestFor Error: $e");
+      print(e);
       return [];
     }
   }
@@ -309,6 +315,40 @@ class ApiService {
     } else {
       throw Exception(
         "Failed to load project issues. StatusCode: ${response.statusCode}",
+      );
+    }
+  }
+
+  /// Fetch issue details by issueId
+  static Future<IssueDetailsModel> fetchIssueDetails(int issueId) async {
+    // Get saved token
+    final token = await TokenHelper.getToken();
+    if (token == null) throw Exception("Token not found");
+
+    // API URL
+    final url = Uri.parse('http://103.166.187.66/api/dynamic/authorized/112');
+
+    // Request body
+    final body = jsonEncode({"IssueId": issueId});
+
+    // HTTP POST request
+    final response = await http.post(
+      url,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token",
+      },
+      body: body,
+    );
+
+    print("Fetch Issue Details Status: ${response.statusCode}");
+    print("Fetch Issue Details Body: ${response.body}");
+
+    if (response.statusCode == 200) {
+      return issueDetailsModelFromJson(response.body);
+    } else {
+      throw Exception(
+        "Failed to load issue details. StatusCode: ${response.statusCode}",
       );
     }
   }

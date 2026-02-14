@@ -1,7 +1,7 @@
-import 'package:call_log_management/projectdetails.dart';
+import 'package:call_log_management/dashboard/projectdetails.dart';
 import 'package:flutter/material.dart';
-import '../api/api_service.dart';
-import '../model/project.dart';
+import '../../api/api_service.dart';
+import '../../model/project.dart';
 
 class HomePageScreen extends StatefulWidget {
   const HomePageScreen({Key? key}) : super(key: key);

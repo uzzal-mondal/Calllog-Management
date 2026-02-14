@@ -1,7 +1,7 @@
 import 'package:call_log_management/api/api_constants.dart';
-import 'package:call_log_management/home.dart' show HomePageScreen;
-import 'package:call_log_management/more.dart';
-import 'package:call_log_management/profile.dart';
+import 'package:call_log_management/dashboard/home.dart' show HomePageScreen;
+import 'package:call_log_management/dashboard/more.dart';
+import 'package:call_log_management/others/profile.dart';
 import 'package:flutter/material.dart';
 
 class DashboardScreen extends StatefulWidget {
