@@ -2,6 +2,7 @@ import 'package:call_log_management/common/commondropdown.dart';
 import 'package:flutter/material.dart';
 import '../../api/api_service.dart';
 import '../../model/desiginationlist.dart';
+import '../../api/api_constants.dart';
 
 class IssueDetailsScreen extends StatefulWidget {
   final int issueId;
@@ -20,7 +21,6 @@ class _IssueDetailsScreenState extends State<IssueDetailsScreen> {
   List<DesignationList> issueStatus = [];
   List<DesignationList> section = [];
 
-  DesignationList? selectedDepartment;
   DesignationList? selectedIssueLabel;
   DesignationList? selectedIssuePriority;
   DesignationList? selectedIssueStatus;
@@ -34,17 +34,26 @@ class _IssueDetailsScreenState extends State<IssueDetailsScreen> {
 
   /// Load all dropdowns
   Future<void> loadAllDropdowns() async {
+    loading = true;
+    setState(() {});
+
+
     issueLabel = await ApiService.getDropdownList("IssueLabel", 1);
     issuePriority = await ApiService.getDropdownList("IssuePriority", 1);
     issueStatus = await ApiService.getDropdownList("IssueStatus", 1);
-    await loadSection(1);
-    setState(() => loading = false);
+
+   
+    await loadSection(refId: 1);
+
+    loading = false;
+    setState(() {});
   }
 
-  /// Load Section By RefId
-  Future<void> loadSection(int refId) async {
-    section = await ApiService.getDropdownList("Section", 12, refId: refId);
-    selectedSection = null;
+  /// Load Section dynamically based on logged-in userId and refId
+  Future<void> loadSection({required int refId}) async {
+    int userId = ApiConstants.loginResponse.user!.userId!;
+    section = await ApiService.getDropdownList("Section", userId, refId: refId);
+    selectedSection = null; // Reset selection
     setState(() {});
   }
 
@@ -64,11 +73,11 @@ class _IssueDetailsScreenState extends State<IssueDetailsScreen> {
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment:
-                CrossAxisAlignment.stretch, // Stretch to full width
+                CrossAxisAlignment.stretch, // Stretch full width
             children: [
               /// Issue Priority
               SizedBox(
-                width: double.infinity, // Ensure full width
+                width: double.infinity,
                 child: CommonDropdown(
                   label: "Issue Priority",
                   value: selectedIssuePriority,
@@ -90,7 +99,7 @@ class _IssueDetailsScreenState extends State<IssueDetailsScreen> {
               ),
               const SizedBox(height: 16),
 
-              /// Section Dropdown
+              /// Section Dropdown (dynamic)
               SizedBox(
                 width: double.infinity,
                 child: CommonDropdown(
@@ -113,8 +122,7 @@ class _IssueDetailsScreenState extends State<IssueDetailsScreen> {
                 ),
               ),
 
-              /// Bottom spacing
-              const SizedBox(height: 0),
+              const SizedBox(height: 24), // Bottom spacing
             ],
           ),
         ),
