@@ -1,104 +1,108 @@
-import 'package:call_log_management/api/api_constants.dart';
-import 'package:call_log_management/more.dart';
-import 'package:call_log_management/profile.dart';
 import 'package:flutter/material.dart';
+import '../api/api_service.dart';
+import '../model/project.dart';
 
-class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({super.key});
+class HomePageScreen extends StatefulWidget {
+  const HomePageScreen({Key? key}) : super(key: key);
 
   @override
-  State<DashboardScreen> createState() => _DashboardScreenState();
+  State<HomePageScreen> createState() => _HomePageScreenState();
 }
 
-class _DashboardScreenState extends State<DashboardScreen> {
-  int _selectedIndex = 0;
+class _HomePageScreenState extends State<HomePageScreen> {
+  late Future<ProjectModel> projectFuture;
 
-  final String userName =
-      ApiConstants.loginResponse.user!.displayName ?? "Unknown User";
-  // Placeholder username
-
-  final List<Widget> _pages = const [
-    Center(child: Text("Home Page")),
-    Center(child: Text("Create Issue Page")),
-    MoreScreen(),
-    //MorePage(), // Pass the user data to ProfilePage
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+  @override
+  void initState() {
+    super.initState();
+    projectFuture = ApiService.fetchProjects();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blue,
-        automaticallyImplyLeading: false,
-        toolbarHeight: 80, // More space for 2 rows
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Top Row: Weather icon + Greeting
-            Row(
-              children: const [
-                Icon(
-                  Icons.wb_sunny, // Weather icon
-                  color: Colors.white,
-                  size: 20,
-                ),
-                SizedBox(width: 6),
-                Text(
-                  "Good Morning",
-                  style: TextStyle(fontSize: 18, color: Colors.white),
-                ),
-              ],
-            ),
+      backgroundColor: const Color(0xffF4F6F8),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 16),
+          child: FutureBuilder<ProjectModel>(
+            future: projectFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
 
-            SizedBox(height: 12),
+              if (snapshot.hasError) {
+                return Center(child: Text(snapshot.error.toString()));
+              }
 
-            // Bottom Row: Profile icon + Username
-            Row(
-              children: [
-                const CircleAvatar(
-                  radius: 14,
-                  child: Icon(
-                    Icons.person, // Default profile icon
-                    size: 24,
-                    color: Colors.white,
-                  ),
-                  backgroundColor: Colors.grey, // Circle background
+              if (!snapshot.hasData || snapshot.data!.projects!.isEmpty) {
+                return const Center(child: Text("No Projects Found"));
+              }
+
+              final projects = snapshot.data!.projects!;
+
+              return SizedBox(
+                height: 150,
+                child: ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  scrollDirection: Axis.horizontal,
+                  itemCount: projects.length,
+                  itemBuilder: (context, index) {
+                    final project = projects[index];
+
+                    return Container(
+                      width: 240,
+                      margin: const EdgeInsets.only(right: 12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: Colors.blueAccent),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(14),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              project.code ?? "",
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              project.name ?? "",
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              project.description ?? "",
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color: Colors.black54,
+                                height: 1.4,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
                 ),
-                const SizedBox(width: 8),
-                Text(
-                  userName,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-
-      body: _pages[_selectedIndex],
-
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add_circle),
-            label: "Create",
+              );
+            },
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.more), label: "more"),
-        ],
+        ),
       ),
     );
   }

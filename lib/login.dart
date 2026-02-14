@@ -2,7 +2,7 @@ import 'package:call_log_management/api/api_constants.dart';
 import 'package:call_log_management/api/api_service.dart';
 import 'package:call_log_management/model/loginresponse.dart';
 import 'package:flutter/material.dart';
-import 'package:call_log_management/home.dart';
+import 'package:call_log_management/dashboard.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -21,7 +21,8 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
 
-    usernameController.text = "subodhkumarbhowmick";
+    //usernameController.text = "subodhkumarbhowmick";
+    usernameController.text = "amal";
     passwordController.text = "password";
   }
 
@@ -43,9 +44,8 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => isLoading = false);
 
     if (response != null && response.success == true) {
-      
       ApiConstants.loginResponse = response;
-       print(ApiConstants.loginResponse.user!.displayName);
+      print(ApiConstants.loginResponse.user!.displayName);
 
       Navigator.pushReplacement(
         context,
