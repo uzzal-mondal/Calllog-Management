@@ -8,6 +8,7 @@ import 'package:call_log_management/model/notifymodel.dart';
 import 'package:call_log_management/model/portfolio.dart';
 import 'package:call_log_management/model/postmodel.dart';
 import 'package:call_log_management/model/project.dart';
+import 'package:call_log_management/model/projectissue.dart';
 import 'package:call_log_management/utils/token_helper.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -277,6 +278,38 @@ class ApiService {
       return projectModelFromJson(response.body);
     } else {
       throw Exception("Failed to load projects");
+    }
+  }
+
+  /// Fetch project issues by projectId
+  static Future<List<ProjectIssueModel>> fetchProjectIssues(
+    int projectId,
+  ) async {
+    final token = await TokenHelper.getToken();
+    if (token == null) throw Exception("Token not found");
+
+    final url = Uri.parse(
+      'http://103.166.187.66/api/dynamic/authorized/111',
+    ); // ✅ correct issues endpoint
+
+    final response = await http.post(
+      url,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token",
+      },
+      body: jsonEncode({"UserId": 12, "ProjectId": projectId}),
+    );
+
+    print("Fetch Issues Status: ${response.statusCode}");
+    print("Fetch Issues Body: ${response.body}");
+
+    if (response.statusCode == 200) {
+      return projectIssueModelFromJson(response.body);
+    } else {
+      throw Exception(
+        "Failed to load project issues. StatusCode: ${response.statusCode}",
+      );
     }
   }
 }
